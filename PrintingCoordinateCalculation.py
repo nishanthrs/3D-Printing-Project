@@ -1,29 +1,39 @@
 import numpy as np
 import sys
 
-global xValues; 
-xValues = [];    
-global yValues;
-yValues = [];
-global zValues;
-zValues = [];
-global extrusionValues;
-extrusionValues = [];
+## global xValues; 
+## xValues = [];    
+## global yValues;
+## yValues = [];
+## global zValues;
+## zValues = [];
+## global extrusionValues;
+## extrusionValues = [];
 
-global extrusionValue;
-extrusionValue = 5;
+## global extrusionValue;
+## extrusionValue = 5;
 
-global x1
-x1 = -1;
-global y1
-y1 = -1;
+## global x1
+## x1 = -1;
+## global y1
+## y1 = -1;
 
-def calculateExtrusion(x, y):
+def calculateExtrusion(x, y, x1, y1):
 	distance = (((x1-x)*(x1-x)) + ((y1-y)*(y1-y)))**0.5;
 	return distance * 0.1;
 
-def createFunctionPointsAndGCode(function):
-	### For x^2
+def createFunctionPointsAndGCode(function, axis):
+	x1 = -1;
+	y1 = -1;
+
+	extrusionValue = 0;
+
+	xValues = []; 
+	yValues = [];
+	zValues = [];
+	extrusionValues = [];
+
+	axis = 2;
 
 	for x in np.arange(1, 10, .1): ## for x in range(firstxBound, finalxBound):
 		for i in range(1,60): ## Range must be twice the unit of measurement to rotate around 2*pi (full circle)
@@ -34,11 +44,11 @@ def createFunctionPointsAndGCode(function):
 			yValues.append(yValue);
 			zValues.append(zValue);
 			if (x1 != -1 and y1 != -1):
-				extrusionValue += calculateExtrusion(xValue, yValue);
+				extrusionValue += calculateExtrusion(xValue, yValue, x1, y1);
 				extrusionValues.append(extrusionValue); 
 			## Previous values used to calculate distance between points and thus, extrusion values 
-			##x1 = xValue; 
-			##y1 = yValue;
+			x1 = xValue; 
+			y1 = yValue;
 
 	##print(xValues);
 	##print(yValues);
@@ -60,7 +70,7 @@ def createFunctionPointsAndGCode(function):
 
 	for num in range(1, 5309): ## 5309 with 0.1
 		## E part of GCode is calculated via formula (do later)
-		gCodeString += "G1" + " X" + str(xValues[num]) + " Y" + str(yValues[num]) + " Z" + str(zValues[num]) + " E" + "5.0" + " F" + "2.5" + "\n";
+		gCodeString += "G1" + " X" + str(xValues[num]) + " Y" + str(yValues[num]) + " Z" + str(zValues[num]) + " E" + str(extrusionValues[num]) + " F" + "2.5" + "\n";
 
 	print "G CODE: " + gCodeString;	
 	return gCodeString;
