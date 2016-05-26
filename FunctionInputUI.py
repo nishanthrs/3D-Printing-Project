@@ -16,17 +16,14 @@ label.grid(row = 1, column = 0, sticky = W);
 function = Entry(app);
 function.grid(row = 3, column = 0, sticky = W);
 
-v = IntVar();
-
-xRevolveRadioButton = Radiobutton(root, text = "Revolve about x-axis", variable=v, value=1);
-xRevolveRadioButton.grid(row = 1, column = 2, sticky = W);
-yRevolveRadioButton = Radiobutton(root, text = "Revolve about y-axis", variable=v, value=2);
-yRevolveRadioButton.grid(row = 2, column = 2, sticky = W);
+firstxBound = Entry(app);
+firstxBound.grid(row = 0, column = 2, sticky = W);
+finalxBound = Entry(app);
+finalxBound.grid(row = 1, column = 2, sticky = W);
 
 def generateGCode():
 	print("FUNCTION: " + function.get());
-	print(v.get());
-	gCodeString = createFunctionPointsAndGCode(function.get(), v.get());
+	gCodeString = createFunctionPointsAndGCode(function.get(), firstxBound.get(), finalxBound.get());
 	write(gCodeString);
 
 generateGCodeButton = Button(app, text = "Generate", command = generateGCode);
