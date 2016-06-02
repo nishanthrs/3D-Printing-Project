@@ -1,5 +1,11 @@
 import numpy as np
 import sys
+from sympy import *
+from sympy.parsing.sympy_parser import parse_expr
+from sympy.solvers import solve
+from sympy import Symbol
+
+## Function: 0.00001 * (((x+10)**3) * ((x-10)**3))
 
 def calculateExtrusion(x, y, x1, y1):
 	distance = (((x1-x)*(x1-x)) + ((y1-y)*(y1-y)))**0.5;
@@ -37,28 +43,14 @@ def createFunctionPointsAndGCode(function, firstBound, finalBound, maxDegree):
 			xValue = x * np.cos(np.pi*i/30) + 100; ## Rotate x point by using cosine 
 			yValue = x * np.sin(np.pi*i/30) + 100; ## Rotate y point by using sine 
 			zValue = -1 * eval(function);         ## z point is simply elevation or function - change to tempzValue later
-			## Only fix below issue if above idea (adjustment of deltaBounds based on max height)
-			'''
-			if (np.absolute(z1-tempzValue) > epsilon):
-				print("Z STEP EXCEEDED");
-				print("Z1: " + str(z1));
-				print("TEMP Z: " + str(tempzValue));
-				## zValue = z1 + epsilon; Issue is occuring here because this value ends up being way off the actual z calculation (figure out math behind it)
-				print("Z: " + str(zValue));
-			else:
-				## print("Z STEP NOT EXCEEDED");
-				## print("Z1: " + str(z1));
-				## print("Z: " + str(zValue));
-				zValue = -1 * eval(function);
-			## xValue = eval(function);
-			## yValue = x * np.sin(np.pi*i/30) + 50;
-			## zValue = x * np.cos(np.pi*i/30) + 50;
-			'''
+			symbol = Symbol('x');
+			radius = solve(parse_expr(function + " - " + str(-1*zValue)), symbol);
+			## print("RADIUS: " + str(radius[0]));
 			xValues.append(xValue); 
 			yValues.append(yValue);
 			zValues.append(zValue);
 			if (x1 != -1 and y1 != -1):
-				extrusionValue += calculateExtrusion(xValue, yValue, x1, y1);
+				extrusionValue += calculateExtrusion(xValue, yValue, x1, y1)/12; ## Use radius in calculating e if this doesn't work
 				extrusionValues.append(extrusionValue);
 			## Previous values used to calculate distance between points and thus, extrusion values 
 			x1 = xValue; 
