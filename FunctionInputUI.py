@@ -24,9 +24,9 @@ finalxBound.grid(row = 1, column = 2, sticky = W);
 
 def generateGCode():
 	print("FUNCTION: " + function.get());
-	maxDegree = float(function.get()[6]);
-	print("MAX DEGREE: " + str(maxDegree));
-	gCodeString = createFunctionPointsAndGCode(function.get(), firstxBound.get(), finalxBound.get(), maxDegree);
+	## maxDegree = float(function.get()[6]);
+	## print("MAX DEGREE: " + str(maxDegree));
+	gCodeString = createFunctionPointsAndGCode(function.get(), firstxBound.get(), finalxBound.get(), 2);
 	writeToFile(gCodeString);
 
 generateGCodeButton = Button(app, text = "Generate", command = generateGCode);

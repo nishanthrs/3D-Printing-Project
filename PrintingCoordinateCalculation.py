@@ -44,13 +44,13 @@ def createFunctionPointsAndGCode(function, firstBound, finalBound, maxDegree):
 			yValue = x * np.sin(np.pi*i/30) + 100; ## Rotate y point by using sine 
 			zValue = -1 * eval(function);         ## z point is simply elevation or function - change to tempzValue later
 			symbol = Symbol('x');
-			radius = solve(parse_expr(function + " - " + str(-1*zValue)), symbol);
+			## radius = solve(parse_expr(function + " - " + str(-1*zValue)), symbol);
 			## print("RADIUS: " + str(radius[0]));
 			xValues.append(xValue); 
 			yValues.append(yValue);
 			zValues.append(zValue);
 			if (x1 != -1 and y1 != -1):
-				extrusionValue += calculateExtrusion(xValue, yValue, x1, y1)/12; ## Use radius in calculating e if this doesn't work
+				extrusionValue += calculateExtrusion(xValue, yValue, x1, y1)/22; ##+ (0.125 * radius[0]); ## Use radius in calculating e if this doesn't work
 				extrusionValues.append(extrusionValue);
 			## Previous values used to calculate distance between points and thus, extrusion values 
 			x1 = xValue; 
